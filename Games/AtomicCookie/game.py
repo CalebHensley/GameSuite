@@ -64,7 +64,7 @@ def run_atomic_cookie():
     Collider_clicker_multiplier = 1.5
 
 
-    img = tk.PhotoImage(file="AtomicCookie/images/cookie.png")
+    img = tk.PhotoImage(file="Games/AtomicCookie/images/cookie.png")
     img = img.subsample(3, 3)
 
     def load_click_counts():

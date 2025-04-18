@@ -1,5 +1,7 @@
 import pygame
 import sys
+import webbrowser
+import os
 
 class MainMenu:
     def __init__(self, screen):
@@ -7,19 +9,19 @@ class MainMenu:
         self.screen = screen
         self.screen_rect = screen.get_rect()
         self.font = pygame.font.Font(None, 42)  # Font for the menu title
-        self.options = ["Space Invaders", "Atomic Cookie", "Coming Soon", "Coming Soon", "Coming Soon", "Coming Soon"]  # Add more games here
+        self.options = ["Space Invaders", "Atomic Cookie", "GuessWhat", "Coming Soon", "Coming Soon", "Coming Soon"]  # Add more games here
         self.option_rects = []  # Store the rects for each option
         self.placeholder_images = []  # Store placeholder images for buttons
 
         # Load the menu wallpaper
-        self.menu_wallpaper = pygame.image.load("images/menuwallpaper.jpg")
+        self.menu_wallpaper = pygame.image.load("Games/images/menuwallpaper.jpg")
         self.menu_wallpaper = pygame.transform.scale(self.menu_wallpaper, (self.screen_rect.width, self.screen_rect.height))
 
         # Load placeholder images
         for index, option in enumerate(self.options):
             if option == "Space Invaders":
                 # Load and scale the background image for the Space Invaders button
-                background_image = pygame.image.load("SpaceInvaders/images/background.jpg")
+                background_image = pygame.image.load("Games/SpaceInvaders/images/background.jpg")
                 background_image = pygame.transform.scale(background_image, (250, 250))  # Scale to button size
                 self.placeholder_images.append(background_image)
             elif option == "Atomic Cookie":
@@ -28,7 +30,7 @@ class MainMenu:
                 button_surface.fill((254, 208, 136))  # Fill with #FED088
 
                 # Load and scale the cookie image
-                cookie_image = pygame.image.load("AtomicCookie/images/cookie.png")
+                cookie_image = pygame.image.load("Games/AtomicCookie/images/cookie.png")
                 cookie_image = pygame.transform.scale(cookie_image, (200, 200))  # Scale the image slightly smaller
 
                 # Blit the cookie image onto the button surface
@@ -36,12 +38,17 @@ class MainMenu:
                 button_surface.blit(cookie_image, cookie_rect)
 
                 self.placeholder_images.append(button_surface)
+            elif option == "GuessWhat":
+                # Load and scale the GuessWhat button image
+                guesswhat_image = pygame.image.load("Games/images/GuessWhat.png")
+                guesswhat_image = pygame.transform.scale(guesswhat_image, (250, 250))  # Scale to button size
+                self.placeholder_images.append(guesswhat_image)
             else:
                 # Use a blue placeholder image for other buttons
                 placeholder_image = pygame.Surface((250, 250))  # Placeholder image size
                 placeholder_image.fill((100, 100, 255))  # Fill with a blue color
                 self.placeholder_images.append(placeholder_image)
-
+                
     def display_menu(self):
         """Display the main menu."""
         # Blit the menu wallpaper as the background
@@ -69,18 +76,25 @@ class MainMenu:
         start_x = (self.screen_rect.width - (grid_cols * button_width + (grid_cols - 1) * padding_x)) // 2
         start_y = 150
 
+        # Get the current mouse position
+        mouse_pos = pygame.mouse.get_pos()
+
         for index, option in enumerate(self.options):
             row = index // grid_cols
             col = index % grid_cols
             button_x = start_x + col * (button_width + padding_x)
             button_y = start_y + row * (button_height + padding_y)
 
-            # Draw the placeholder image
-            self.screen.blit(self.placeholder_images[index], (button_x, button_y))
-
             # Create a rect for the button
             option_rect = pygame.Rect(button_x, button_y, button_width, button_height)
             self.option_rects.append(option_rect)
+
+            # Draw the placeholder image
+            self.screen.blit(self.placeholder_images[index], (button_x, button_y))
+
+            # Check if the mouse is hovering over the button
+            if option_rect.collidepoint(mouse_pos):
+                pygame.draw.rect(self.screen, (92, 210, 212), option_rect, 5)  # Yellow border with 5px thickness
 
             # Render the option text with a black outline
             option_text = self.font.render(option, True, (255, 255, 255))
@@ -96,7 +110,7 @@ class MainMenu:
             option_text_rect = option_text.get_rect(center=option_rect.center)
             self.screen.blit(option_text, option_text_rect)
 
-        pygame.display.flip()
+        pygame.display.flip()  # Update the display
 
     def run(self):
         """Run the main menu loop."""
@@ -114,12 +128,16 @@ class MainMenu:
                                     return "space_invaders"
                                 elif index == 1:  # Atomic Cookie selected
                                     return "atomic_cookie"
+                                elif index == 2:  # GuessWhat selected
+                                    # Open the GuessWhat HTML file
+                                    html_file = os.path.abspath("Games/GuessWhat/index.html")
+                                    webbrowser.open(f"file://{html_file}")
+                                    print("Launching GuessWhat...")
                                 else:
                                     print(f"Game {index + 1} selected!")  # Placeholder for other games
 
             self.display_menu()
-
-
+            
 if __name__ == "__main__":
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))  # Create a window with a fixed size

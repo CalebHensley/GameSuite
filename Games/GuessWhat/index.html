@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Word Game</title>
+    <meta name="description" content="Daily Word Game that tests your vocabulary! Every 5 guesses reveals the next letter of today's word. How quick is your wit?">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Guess the Word</h1>
+        <div id="game">
+            <p id="first-letter">Today's word starts with</p>
+            <p id="letter"></p>
+            <input type="text" id="guess-input" placeholder="Enter your guess" onkeypress="handleKeyPress(event)">
+            <div id="guess-counter">
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+            </div>
+            <p class="small-text">Every 5 guesses reveals the next letter</p>
+        </div>
+    </div>
+    <div id="guessed-words-container">
+        <h2>Guessed Words</h2>
+        <ul id="guessed-list"></ul>
+    </div>
+    <div id="popup" class="hidden">
+        <p>Congratulations! You guessed the word in <span id="time-taken"></span> seconds.</p>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
