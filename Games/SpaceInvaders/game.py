@@ -236,6 +236,8 @@ class SpaceInvaders:
                 if not self.stats.game_active:  # Handle "Play Game" button when the game is inactive
                     if self.play_button.check_click(mouse_pos, event.button):
                         self._start_game()
+                    elif self.return_button.check_click(mouse_pos, event.button):
+                        self.exit_to_main_menu = True
                 elif self.paused:  # Handle "Resume Game" and "Exit to Main Menu" buttons when paused
                     if self.resume_button.check_click(mouse_pos, event.button):
                         self.paused = False  # Resume the game

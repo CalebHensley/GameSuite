@@ -141,7 +141,7 @@ class MainMenu:
 if __name__ == "__main__":
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))  # Create a window with a fixed size
-    pygame.display.set_caption("Main Menu")  # Set the window title
+    pygame.display.set_caption("Game Suite")  # Set the window title
 
     while True:
         main_menu = MainMenu(screen)  # Create an instance of the MainMenu
