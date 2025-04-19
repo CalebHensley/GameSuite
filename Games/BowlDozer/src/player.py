@@ -1,25 +1,25 @@
 import pygame
+import math
 
 class Player:
-    def __init__(self, x=60, y=650):  # Accept x and y as arguments with default values
+    def __init__(self, x=60, y=675):  
         self.x = x
         self.y = y
-        self.original_x = x  # Store the original x position
-        self.original_y = y  # Store the original y position
-        self.width = 60  # Example width
-        self.height = 60  # Example height
-        self.color = (0, 0, 255)  # Example color (blue)
+        self.width = 60
+        self.height = 60
         self.score = 0
         self.is_jumping = False
-        self.jump_height = 16  # Adjust jump height as needed
-        self.gravity = 0.7
+        self.jump_height = 18  # Adjust jump height as needed
+        self.gravity = 1
         self.jump_velocity = 0
         self.ground_y = y  # Store the ground level (initial y position)
+        self.rotation_angle = 0  # Track the current rotation angle
 
         # Load the player image
-        self.image = pygame.image.load("Games/BowlDozer/src/assets/grey.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
-        self.rect = self.image.get_rect(topleft=(self.x, self.y))  # Create a rect for collision detection
+        self.original_image = pygame.image.load("Games/BowlDozer/src/assets/grey.png").convert_alpha()
+        self.original_image = pygame.transform.scale(self.original_image, (self.width, self.height))
+        self.image = self.original_image  # Start with the original image
+        self.rect = self.image.get_rect(center=(self.x, self.y))  # Create a rect for collision detection
 
     def move(self, dx):
         self.x += dx
@@ -39,13 +39,15 @@ class Player:
             if self.y >= self.ground_y:
                 self.y = self.ground_y  # Reset to ground level
                 self.is_jumping = False  # Stop jumping
-        else:
-            # Ensure the player stays at the original x and y when not jumping
-            self.x = self.original_x
-            self.y = self.ground_y
+        
+        self.rect.center = (self.x, self.y)
 
-        # Update the rect position
-        self.rect.topleft = (self.x, self.y)
+        # Rotate the player image around its center
+        self.rotation_angle = (self.rotation_angle - 6) % 360  # Increment the angle and keep it within 0-359
+        rotated_image = pygame.transform.rotate(self.original_image, self.rotation_angle)
+        rotated_rect = rotated_image.get_rect(center=self.rect.center)  # Keep the center consistent
+        self.image = rotated_image
+        self.rect = rotated_rect
 
     def hit_collectible(self):
         self.score += 1
@@ -54,5 +56,5 @@ class Player:
         self.score = 0
 
     def draw(self, screen):
-        # Draw the player image
-        screen.blit(self.image, (self.x, self.y))
+        # Draw the rotated player image
+        screen.blit(self.image, self.rect.topleft)

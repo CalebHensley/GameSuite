@@ -1,9 +1,8 @@
-# This file contains the main game logic, including the game loop, score tracking, and collision detection.
-
 import pygame
 import random
-from player import Player
-from obstacles import Obstacle
+from BowlDozer.src.player import Player
+from BowlDozer.src.obstacles import Obstacle
+import pygame
 import os
 
 # Initialize Pygame
@@ -23,13 +22,13 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Bowl Dozer")
         self.clock = pygame.time.Clock()
-        self.player = Player(x=100, y=300)
+        self.player = Player()
         self.obstacles = []
         self.score = 0
         self.running = True
         
         # Place the player near the bottom of the screen
-        self.player = Player(x=60, y=SCREEN_HEIGHT - 80)
+        self.player = Player()
 
         base_path = os.path.dirname(__file__)  # Get the directory of the current file
         images_path = os.path.join(base_path, "assets")
@@ -43,8 +42,8 @@ class Game:
 
     def update_background(self):
         # Move both background instances to the left
-        self.background_x1 -= 5  # Adjust speed as needed
-        self.background_x2 -= 5
+        self.background_x1 -= 10  # Adjust speed as needed
+        self.background_x2 -= 10
 
         # Reset positions when they move out of the frame
         if self.background_x1 <= -self.background.get_width():
@@ -56,6 +55,15 @@ class Game:
         # Draw both instances of the background
         self.screen.blit(self.background, (self.background_x1, 0))
         self.screen.blit(self.background, (self.background_x2, 0))
+        
+    def reset_game(self):
+        """Reset the game state to restart the level."""
+        self.player = Player()  # Reset the player to the starting position
+        self.obstacles = []  # Clear all obstacles
+        self.score = 0  # Reset the score
+        self.background_x1 = 0  # Reset the background positions
+        self.background_x2 = self.background.get_width()
+        self.last_spawn_time = 0  # Reset the spawn timer
 
     def spawn_obstacle(self):
         # Limit the number of obstacles on screen
@@ -77,7 +85,7 @@ class Game:
     def handle_collisions(self):
         for obstacle in self.obstacles:
             if self.player.rect.colliderect(obstacle.rect):
-                self.running = False  # End game on collision
+               self.reset_game()
 
     def update_score(self):
         for obstacle in self.obstacles:
@@ -106,12 +114,13 @@ class Game:
 
             # Draw the player and obstacles
             for obstacle in self.obstacles:
-                obstacle.move(speed=5)  # Move leftwards at the same speed as the background
+                obstacle.move(speed=10)  # Move leftwards at the same speed as the background
                 obstacle.draw(self.screen)
                 
             self.obstacles = [obstacle for obstacle in self.obstacles if obstacle.rect.right > 0]
             
             self.player.draw(self.screen)
+            self.player.move(1)
 
             pygame.display.flip()
             self.clock.tick(FPS)
